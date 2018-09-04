@@ -55,7 +55,8 @@ if (commander.generate) {
       },
       {
         name: "twofa",
-        message: "2FA seed:"
+        message: "2FA seed:",
+        type: "password",
       },
       {
         name: "passwordThis",
