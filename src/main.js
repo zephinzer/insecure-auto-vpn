@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-var aes = require("aes256");
-var chalk = require("chalk");
-var commander = require("commander");
 var fs = require("fs");
-var inquirer = require("inquirer");
 var path = require("path");
-var pty = require("node-pty");
-var twofa = require("node-2fa");
+
+var aes = require(path.join(__dirname, "../node_modules/", "aes256"));
+var chalk = require(path.join(__dirname, "../node_modules/", "chalk"));
+var commander = require(path.join(__dirname, "../node_modules/", "commander"));
+var inquirer = require(path.join(__dirname, "../node_modules/", "inquirer"));
+var pty = require(path.join(__dirname, "../node_modules/", "node-pty"));
+var twofa = require(path.join(__dirname, "../node_modules/", "node-2fa"));
 
 const SAVE_FILE_PATH = path.join(process.env.HOME, "/.iavpn");
 
@@ -84,7 +85,7 @@ if (commander.generate) {
   process.stdout.write(`Reading .iavpn from ${SAVE_FILE_PATH}... `);
   if (fs.existsSync(SAVE_FILE_PATH) && fs.statSync(SAVE_FILE_PATH).isFile()) {
     config = fs.readFileSync(SAVE_FILE_PATH);
-    process.stdout.write(chalk.green(chalk.bold('DONE.')) + '\n');
+    process.stdout.write(chalk.green(chalk.bold("DONE.")) + "\n");
   } else {
     process.stderr.write(
       chalk.red(chalk.bold("ERR: config file cannot be read\n"))
@@ -101,11 +102,18 @@ if (commander.generate) {
       }
     ])
     .then(answers => {
+      process.stdout.write(chalk.default());
       const connectionString = aes
         .decrypt(answers.password, config)
         .split(":::");
-      if (connectionString[0] !== 'itworks') {
-        process.stderr.write(chalk.red(chalk.bold('ERR: wrong password - exiting with status code 1 in abit...\n')));
+      if (connectionString[0] !== "itworks") {
+        process.stderr.write(
+          chalk.red(
+            chalk.bold(
+              "ERR: wrong password - exiting with status code 1 in abit...\n"
+            )
+          )
+        );
         setTimeout(() => {
           process.exit(1);
         }, Math.floor(Math.random() * 500));
@@ -123,17 +131,21 @@ if (commander.generate) {
           "4"
         ]);
 
-        child.on("data", data => process.stdout.write(data));
+        child.on("data", data => {
+          process.stdout.write(data);
+        });
 
-        setTimeout(() => {
-          child.write(ovpnUsername + "\n");
+        if (data.toString().indexOf("sername") !== -1) {
           setTimeout(() => {
-            child.write(ovpnPassword + "\n");
+            child.write(ovpnUsername + "\n");
             setTimeout(() => {
-              child.write(twofa.generateToken(ovpnSeed).token + "\n");
+              child.write(ovpnPassword + "\n");
+              setTimeout(() => {
+                child.write(twofa.generateToken(ovpnSeed).token + "\n");
+              }, 500);
             }, 500);
           }, 500);
-        }, 500);
+        }
       }
     });
 }

@@ -10,10 +10,16 @@ An experiment in automating a TTY to connect to an OpenVPN server.
 # Installation
 
 ```bash
-sudo npm i -g insecure-auto-vpn;
+npm i -g insecure-auto-vpn;
 ```
 
-This exposes an `iavpn` command on your local machine.
+This exposes an `iavpn` command on your local machine for your current user.
+
+Create a symlink to it in a place that `root` can access:
+
+```bash
+ln -s /usr/bin/iavpn 
+```
 
 # Create Configuration File
 
