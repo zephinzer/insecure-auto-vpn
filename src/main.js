@@ -135,17 +135,15 @@ if (commander.generate) {
           process.stdout.write(data);
         });
 
-        if (data.toString().indexOf("sername") !== -1) {
+        setTimeout(() => {
+          child.write(ovpnUsername + "\n");
           setTimeout(() => {
-            child.write(ovpnUsername + "\n");
+            child.write(ovpnPassword + "\n");
             setTimeout(() => {
-              child.write(ovpnPassword + "\n");
-              setTimeout(() => {
-                child.write(twofa.generateToken(ovpnSeed).token + "\n");
-              }, 500);
+              child.write(twofa.generateToken(ovpnSeed).token + "\n");
             }, 500);
           }, 500);
-        }
+        }, 500);
       }
     });
 }

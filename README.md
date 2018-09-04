@@ -18,7 +18,7 @@ This exposes an `iavpn` command on your local machine for your current user.
 Create a symlink to it in a place that `root` can access:
 
 ```bash
-ln -s /usr/bin/iavpn 
+sudo ln -s $(which iavpn) /usr/bin/iavpn
 ```
 
 # Create Configuration File
